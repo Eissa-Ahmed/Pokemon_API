@@ -2,59 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Pokemon.Model;
 using Pokemon.Model.IRpo;
-using Pokemon.Model.Models;
 using Pokemon.Model.ModelsDTO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PokemonApi.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PokemonController : ControllerBase
+    public class OwnerController : ControllerBase
     {
         #region Ctor
-        public readonly IUnitOfWork services;
+        private readonly IUnitOfWork services;
         private readonly IMapper mapper;
-
-        public PokemonController(IUnitOfWork unitOfWork , IMapper mapper)
+        public OwnerController(IUnitOfWork services, IMapper mapper)
         {
-            this.services = unitOfWork;
+            this.services = services;
             this.mapper = mapper;
         }
         #endregion
 
         #region Action
-
-        #region Rates
-        [HttpGet("GetRate/{id:int}")]
-        public IActionResult GetRates(int id)
-        {
-            try
-            {
-                var pokemon = services.pokemon.PokemonExists(id);
-                if (!pokemon)
-                    return NotFound();
-
-                var data = services.pokemon.GetRate(id);
-                return Ok(new Response<double>
-                {
-                    Code = 200,
-                    Status = true,
-                    Message = "Rates Is Geted",
-                    Data = data
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new Response<double>
-                {
-                    Code = 400,
-                    Status = false,
-                    Message = ex.Message,
-                });
-            }
-        }
-        #endregion
 
         #region GetAll
         [HttpGet("getAll")]
@@ -62,17 +28,17 @@ namespace PokemonApi.Controller
         {
             try
             {
-                var data = services.pokemon.GetAll();
-                return Ok(new Response<IEnumerable<Pokemons>> { 
-                    Code = 200,
-                    Status = true,
-                    Message = "Data Is Geted",
-                    Data = data
+                var data = mapper.Map<IEnumerable<OwnerDTO>>(services.owner.GetAll());
+                return Ok(new Response<IEnumerable<OwnerDTO>>() { 
+                Code = 200,
+                Status = true,
+                Message = "Data Is Geted",
+                Data = data
                 });
             }
             catch (Exception ex)
             {
-                return BadRequest(new Response<IEnumerable<Pokemons>>
+                return BadRequest(new Response<IEnumerable<OwnerDTO>>()
                 {
                     Code = 400,
                     Status = false,
@@ -80,19 +46,20 @@ namespace PokemonApi.Controller
                 });
             }
         }
+
         #endregion
 
         #region GetById
-        [HttpGet("{id:int}")]
+        [HttpGet("GetById/{id:int}")]
         public IActionResult GetById(int id)
         {
             try
             {
-                var data = mapper.Map<PokemonDTO>(services.pokemon.Get(id));
-                if(data is null)
+                if (!services.owner.OwnerExist(id))
                     return NotFound();
 
-                return Ok(new Response<PokemonDTO>
+                var data = mapper.Map<OwnerDTO>(services.owner.Get(id));
+                return Ok(new Response<OwnerDTO>()
                 {
                     Code = 200,
                     Status = true,
@@ -102,7 +69,7 @@ namespace PokemonApi.Controller
             }
             catch (Exception ex)
             {
-                return BadRequest(new Response<PokemonDTO>
+                return BadRequest(new Response<OwnerDTO>()
                 {
                     Code = 400,
                     Status = false,
@@ -110,19 +77,20 @@ namespace PokemonApi.Controller
                 });
             }
         }
+
         #endregion
 
-        #region GetByName
-        [HttpGet("{name:alpha}")]
-        public IActionResult GetByName(string name)
+        #region GetOwnerByPokemon
+        [HttpGet("GetOwnerByPokemon/{id:int}")]
+        public IActionResult GetOwnerByPokemon(int id)
         {
             try
             {
-                var data = mapper.Map<PokemonDTO>(services.pokemon.Get(name));
-                if (data is null)
+                if (!services.pokemon.PokemonExists(id))
                     return NotFound();
 
-                return Ok(new Response<PokemonDTO>
+                var data = mapper.Map<IEnumerable<OwnerDTO>>(services.owner.GetOwnerByPokemon(id));
+                return Ok(new Response<IEnumerable<OwnerDTO>>()
                 {
                     Code = 200,
                     Status = true,
@@ -132,7 +100,7 @@ namespace PokemonApi.Controller
             }
             catch (Exception ex)
             {
-                return BadRequest(new Response<PokemonDTO>
+                return BadRequest(new Response<IEnumerable<OwnerDTO>>()
                 {
                     Code = 400,
                     Status = false,
@@ -140,17 +108,37 @@ namespace PokemonApi.Controller
                 });
             }
         }
-        #endregion
-
-        #region Delete
 
         #endregion
 
-        #region Create
+        #region GetOwnerByPokemon
+        [HttpGet("GetPokemonsByOwner/{id:int}")]
+        public IActionResult GetPokemonsByOwner(int id)
+        {
+            try
+            {
+                if (!services.owner.OwnerExist(id))
+                    return NotFound();
 
-        #endregion
-
-        #region Update
+                var data = mapper.Map<IEnumerable<PokemonDTO>>(services.owner.GetPokemonsByOwner(id));
+                return Ok(new Response<IEnumerable<PokemonDTO>>()
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Geted",
+                    Data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<PokemonDTO>>()
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
 
         #endregion
 

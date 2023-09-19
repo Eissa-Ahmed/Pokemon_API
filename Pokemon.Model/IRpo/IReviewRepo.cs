@@ -2,8 +2,12 @@
 
 namespace Pokemon.Model.IRpo
 {
-    public interface IReviewRepo : IRepo<Review>
+    public interface IReviewRepo
     {
-        public Task Update(Review model);
+        IEnumerable<Review> GetAll();
+        IEnumerable<Review> GetReviewByPokemon(int id);
+        Review GetById(int id);
+        bool ReviewExist(int id);
+
     }
 }

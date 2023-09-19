@@ -26,6 +26,28 @@ builder.Services.AddAutoMapper(option => option.AddProfile(new DomainProfile()))
 builder.Services.AddCors();
 #endregion
 
+#region Identity
+/*builder.Services.AddIdentity<IdentityUser , IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.Configure<IdentityOptions>(option =>
+{
+    option.Password.RequiredUniqueChars = 0;
+    option.Password.RequireNonAlphanumeric = false;
+    option.Password.RequireDigit = false;
+    option.Password.RequiredLength = 6;
+    option.Password.RequireLowercase = false;
+    option.Password.RequireUppercase = false;
+});
+builder.Services.ConfigureApplicationCookie(option =>
+{
+    option.ExpireTimeSpan = TimeSpan.FromMinutes(3);
+    option.AccessDeniedPath = "/Account/Login";
+    option.LogoutPath = "/Account/Login";
+    option.LoginPath = "/Account/Login";
+});*/
+#endregion
+
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -50,6 +72,8 @@ app.UseCors(option => option
 .AllowAnyHeader()
 );
 #endregion
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

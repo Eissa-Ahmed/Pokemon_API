@@ -2,9 +2,12 @@
 
 namespace Pokemon.Model.IRpo
 {
-    public interface IPokemonRepo : IRepo<Pokemons>
+    public interface IPokemonRepo 
     {
-        public Task Update(Pokemons model);
-        public Task<double> GetRate(int id);
+        public IEnumerable<Pokemons> GetAll();
+        public Pokemons Get(int id);
+        public Pokemons Get(string name);
+        double GetRate(int id);
+        bool PokemonExists(int id);
     }
 }

@@ -12,8 +12,8 @@ using Pokemon.DAL.Database;
 namespace Pokemon.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230917184706_InitialDb")]
-    partial class InitialDb
+    [Migration("20230919160055_InitialDB")]
+    partial class InitialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -153,6 +153,9 @@ namespace Pokemon.DAL.Migrations
 
                     b.Property<int>("PokemonId")
                         .HasColumnType("int");
+
+                    b.Property<double>("Rate")
+                        .HasColumnType("float");
 
                     b.Property<int>("ReviewerId")
                         .HasColumnType("int");

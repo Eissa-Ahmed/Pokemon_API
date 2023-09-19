@@ -1,42 +1,67 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pokemon.DAL.Database;
+﻿using Pokemon.DAL.Database;
 using Pokemon.Model.IRpo;
 using Pokemon.Model.Models;
 
 namespace Pokemon.DAL.Repo
 {
-    public class PokemonRepo : Repo<Pokemons> , IPokemonRepo
+    public class PokemonRepo : IPokemonRepo
     {
+        #region Ctro
         private readonly ApplicationDbContext dbContext;
-        public PokemonRepo(ApplicationDbContext dbContext) : base(dbContext) 
+        public PokemonRepo(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
+        #endregion
 
-        public async Task<double> GetRate(int id)
+
+        #region Methods
+
+        #region GetById
+        public Pokemons Get(int id)
         {
-            var reviews = await dbContext.Reviews.Where(i => i.PokemonId == id).ToListAsync();
-            var ratres =  reviews.Sum(s => s.Rate) / reviews.Count();
-            if(ratres > 0)
-            {
-                return ratres;
-            }
-            else
-            {
+            var item = dbContext.pokemons.Where(i => i.Id == id).SingleOrDefault();
+            return item;
+        }
+
+        #endregion
+
+        #region GetByName
+        public Pokemons Get(string name)
+        {
+            var item = dbContext.pokemons.Where(i => i.Name == name).SingleOrDefault();
+            return item;
+        }
+        #endregion
+
+        #region GetAll
+        public IEnumerable<Pokemons> GetAll()
+        {
+            var items = dbContext.pokemons.OrderBy(p => p.Id).ToList();
+            return items;
+        }
+        #endregion
+
+        #region GetRate
+        public double GetRate(int id)
+        {
+            var reviews = dbContext.Reviews.Where(i => i.PokemonId == id).ToList();
+            if (reviews.Count() <= 0)
                 return 0;
-            }
-            
-        }
 
-        public async Task Update(Pokemons model)
-        {
-            var item = await dbContext.pokemons.FindAsync(model.Id);
-            if (item == null)
-            {
-                item.Name = model.Name;
-                item.BirthDate = model.BirthDate;
-                item.ImageUrl = model.ImageUrl;
-            }
+            return reviews.Sum(i => i.Rate) / reviews.Count();
         }
+        #endregion
+
+        #region PokemonExist
+        public bool PokemonExists(int id)
+        {
+            return dbContext.pokemons.Any(i => i.Id == id);
+        }
+        #endregion
+
+        #endregion
+
+
     }
 }

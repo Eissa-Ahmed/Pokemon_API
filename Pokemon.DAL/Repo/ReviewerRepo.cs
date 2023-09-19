@@ -4,19 +4,36 @@ using Pokemon.Model.Models;
 
 namespace Pokemon.DAL.Repo
 {
-    public class ReviewerRepo : Repo<Reviewer> , IReviewerRepo
+    public class ReviewerRepo : IReviewerRepo
     {
+        #region Ctor
         private readonly ApplicationDbContext dbContext;
-
-        public ReviewerRepo(ApplicationDbContext dbContext) : base(dbContext)
+        public ReviewerRepo(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
-        public async Task Update(Reviewer model)
+        #endregion
+        public Reviewer Get(int id)
         {
-            var item = await dbContext.Reviewers.FindAsync(model.Id);
-            item.FirstName = model.FirstName;
-            item.LastName = model.LastName;
+            var item = dbContext.Reviewers.FirstOrDefault(x => x.Id == id);
+            return item;
+        }
+
+        public IEnumerable<Reviewer> GetAll()
+        {
+            var items = dbContext.Reviewers.ToList();
+            return items;
+        }
+
+        public IEnumerable<Review> GetReviewsByReviewer(int id)
+        {
+            var items = dbContext.Reviews.Where(i => i.ReviewerId == id).ToList();
+            return items;
+        }
+
+        public bool ReviewerExist(int id)
+        {
+            return dbContext.Reviewers.Any(i => i.Id == id);
         }
     }
 }

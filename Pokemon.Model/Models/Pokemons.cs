@@ -8,7 +8,7 @@
         public DateTime BirthDate { get; set; }
         public IEnumerable<Review> Review { get; set; }
         public IEnumerable<PokemonOwner> PokemonOwner { get; set; }
-        public IEnumerable<PokemonCategory>? PokemonCategory { get; set; }
+        public IEnumerable<PokemonCategory> PokemonCategory { get; set; } 
 
     }
 }
