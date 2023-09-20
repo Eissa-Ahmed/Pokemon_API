@@ -27,13 +27,13 @@ namespace Pokemon.DAL.Repo
 
         public IEnumerable<Owner> GetOwnerByPokemon(int id)
         {
-            var items = dbContext.PokemonOwner.Where(i => i.pokemonId == id).Select(i => i.Owner);
+            var items = dbContext.PokemonOwner.Where(i => i.pokemonsId == id).Select(i => i.Owner);
             return items;
         }
 
         public IEnumerable<Pokemons> GetPokemonsByOwner(int id)
         {
-            var items = dbContext.PokemonOwner.Where(i => i.OwnerId == id).Select(i => i.Pokemon);
+            var items = dbContext.PokemonOwner.Where(i => i.OwnerId == id).Select(i => i.pokemons);
             return items;
         }
 

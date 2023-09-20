@@ -5,10 +5,10 @@ namespace Pokemon.Model.Models
     public class PokemonOwner
     {
         [ForeignKey("Pokemon")]
-        public int pokemonId { get; set; }
+        public int pokemonsId { get; set; }
         [ForeignKey("Owner")]
         public int OwnerId { get; set; }
-        public Pokemons Pokemon { get; set; }
+        public Pokemons pokemons { get; set; }
         public Owner Owner { get; set; }
     }
 }

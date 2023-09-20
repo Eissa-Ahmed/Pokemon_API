@@ -11,8 +11,8 @@ namespace Pokemon.DAL.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PokemonOwner>().HasKey(k => new { k.pokemonId , k.OwnerId});
-            modelBuilder.Entity<PokemonCategory>().HasKey(k => new { k.pokemonId , k.CategoryId});
+            modelBuilder.Entity<PokemonOwner>().HasKey(k => new { k.pokemonsId , k.OwnerId});
+            modelBuilder.Entity<PokemonCategory>().HasKey(k => new { k.pokemonsId , k.CategoryId});
         }
 
         public DbSet<Pokemons> pokemons { get; set; }

@@ -12,6 +12,8 @@ namespace Pokemon.DAL.Repo
         {
             this.dbContext = dbContext;
         }
+
+
         #endregion
 
 
@@ -57,6 +59,27 @@ namespace Pokemon.DAL.Repo
         public bool PokemonExists(int id)
         {
             return dbContext.pokemons.Any(i => i.Id == id);
+        }
+        #endregion
+
+        #region Ctrate Pokemon
+        public bool CreatePokemon(int categoryId, int OwnerId, Pokemons model)
+        {
+            var owner = dbContext.Owners.Where(i => i.Id == OwnerId).FirstOrDefault();
+            var category = dbContext.Categories.Where(i => i.Id == categoryId).FirstOrDefault();
+
+            var PokemonOwner = new PokemonOwner()
+            {
+                pokemons = model,
+                Owner = owner,
+            };
+            var PokemonCategory = new PokemonCategory()
+            {
+                pokemons = model,
+                Category = category,
+            };
+            dbContext.pokemons.Add(model);
+            return true;
         }
         #endregion
 

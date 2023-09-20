@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pokemon.Model;
 using Pokemon.Model.IRpo;
+using Pokemon.Model.Models;
 using Pokemon.Model.ModelsDTO;
 
 namespace PokemonApi.Controller
@@ -146,15 +147,97 @@ namespace PokemonApi.Controller
         #endregion
 
         #region Delete
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteCountry(int id)
+        {
+            try
+            {
+                if (!services.country.CountryExist(id))
+                    return NotFound();
 
+                services.country.DeleteCountry(id);
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<CountryDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Deleted",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<CountryDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #region Create
+        [HttpPost()]
+        public async Task<IActionResult> DeleteCountry([FromForm] CountryDTO model)
+        {
+            try
+            {
+                var country = services.country.GetAll().Where(i => i.Name.Trim().ToLower() == model.Name.ToLower()).FirstOrDefault();
+                if (country != null)
+                    throw new Exception("Country Is Exist");
 
+                services.country.CreateCountry(mapper.Map<Country>(model));
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<CountryDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Creatred",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<CountryDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #region Update
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> DeleteCountry(int id ,[FromForm] CountryDTO model)
+        {
+            try
+            {
+                if (!services.country.CountryExist(id))
+                    throw new Exception("Country Is Not Exist");
 
+                services.country.UpdateCountry(id,mapper.Map<Country>(model));
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<CountryDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Updated",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<CountryDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #endregion

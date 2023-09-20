@@ -56,6 +56,28 @@ namespace Pokemon.DAL.Repo
         }
         #endregion
 
+        #region Create Country
+        public void CreateCountry(Country model)
+        {
+            dbContext.Countries.Add(model);
+        }
+        #endregion
+
+        #region Update Country
+        public void UpdateCountry(int id ,Country model) {
+            var item = dbContext.Countries.Find(id);
+            item.Name = model.Name;
+        }
+        #endregion
+
+        #region Delete Country
+        public void DeleteCountry(int id) {
+            var item = dbContext.Countries.Find(id);
+            dbContext.Countries.Remove(item);
+        }
+        #endregion
+
+
         #endregion
     }
 }

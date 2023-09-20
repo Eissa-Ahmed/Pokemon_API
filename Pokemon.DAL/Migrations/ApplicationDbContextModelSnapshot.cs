@@ -36,7 +36,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.Country", b =>
@@ -53,7 +53,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.Owner", b =>
@@ -79,7 +79,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Owners");
+                    b.ToTable("Owners", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.PokemonCategory", b =>
@@ -94,7 +94,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("PokemonCategory");
+                    b.ToTable("PokemonCategory", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.PokemonOwner", b =>
@@ -109,7 +109,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("PokemonOwner");
+                    b.ToTable("PokemonOwner", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.Pokemons", b =>
@@ -133,7 +133,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("pokemons");
+                    b.ToTable("pokemons", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.Review", b =>
@@ -167,7 +167,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasIndex("ReviewerId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.Reviewer", b =>
@@ -188,7 +188,7 @@ namespace Pokemon.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reviewers");
+                    b.ToTable("Reviewers", (string)null);
                 });
 
             modelBuilder.Entity("Pokemon.Model.Models.Owner", b =>
