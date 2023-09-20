@@ -63,24 +63,36 @@ namespace Pokemon.DAL.Repo
         #endregion
 
         #region Ctrate Pokemon
-        public bool CreatePokemon(int categoryId, int OwnerId, Pokemons model)
+        public bool CreatePokemon( IEnumerable<int> categoryId, int OwnerId, Pokemons model)
         {
             var owner = dbContext.Owners.Where(i => i.Id == OwnerId).FirstOrDefault();
-            var category = dbContext.Categories.Where(i => i.Id == categoryId).FirstOrDefault();
 
+            List<Category> Categories = new List<Category>();
+            foreach (var item in categoryId)
+            {
+                Categories.Add(dbContext.Categories.Where(i => i.Id == item).FirstOrDefault());
+            }
+
+            List<PokemonCategory> pokemonCategories = new List<PokemonCategory>();
+            foreach (var item in Categories)
+            {
+                pokemonCategories.Add(new PokemonCategory
+                {
+                    pokemons= model,
+                    Category = item
+                });
+            }
+
+            dbContext.PokemonCategory.AddRange(pokemonCategories);
+
+            #region Owner
             var PokemonOwner = new PokemonOwner()
             {
                 pokemons = model,
                 Owner = owner,
             };
             dbContext.PokemonOwner.Add(PokemonOwner);
-
-            var PokemonCategory = new PokemonCategory()
-            {
-                pokemons = model,
-                Category = category,
-            };
-            dbContext.PokemonCategory.Add(PokemonCategory);
+            #endregion
 
             dbContext.pokemons.Add(model);
             return true;

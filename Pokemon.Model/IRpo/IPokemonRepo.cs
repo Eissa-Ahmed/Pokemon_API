@@ -10,7 +10,7 @@ namespace Pokemon.Model.IRpo
         double GetRate(int id);
         void DeletePokemon(int id);
         bool PokemonExists(int id);
-        bool CreatePokemon(int categoryId, int OwnerId, Pokemons model);
+        bool CreatePokemon(IEnumerable<int> categoryId, int OwnerId, Pokemons model);
         void UpdatePokemon(int id, Pokemons model);
     }
 }

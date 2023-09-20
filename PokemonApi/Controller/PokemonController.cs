@@ -189,13 +189,13 @@ namespace PokemonApi.Controller
                 if(!services.owner.OwnerExist(model.OwnerId))
                     throw new Exception("Owner Is Not Exist");
 
-                if (!services.category.CategoryExists(model.CategoryId))
-                    throw new Exception("Category Is Not Exist");
+                /*if (!services.category.CategoryExists(model.CategoryId[0]))
+                    throw new Exception("Category Is Not Exist");*/
 
                 string imageUrl = await FileManager.UploadImage(model.file);
                 var item = mapper.Map<Pokemons>(model);
                 item.ImageUrl = imageUrl;
-                services.pokemon.CreatePokemon(model.OwnerId, model.CategoryId, item);
+                services.pokemon.CreatePokemon(model.CategoryId, model.OwnerId, item);
                 await services.SaveChanges();
 
                 return Ok(new Response<Pokemons>() {
