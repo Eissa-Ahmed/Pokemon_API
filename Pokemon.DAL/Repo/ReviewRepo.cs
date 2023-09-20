@@ -36,5 +36,23 @@ namespace Pokemon.DAL.Repo
         {
             return dbContext.Reviews.Any(i => i.Id == id);
         }
+
+
+        public void CreateReview(Review model)
+        {
+            dbContext.Reviews.Add(model);
+        }
+        public void DeleteReview(int id)
+        {
+            var item = dbContext.Reviews.Find(id);
+            dbContext.Reviews.Remove(item);
+        }
+        public void UpdateReview(int id, Review model)
+        {
+            var item = dbContext.Reviews.Find(id);
+            item.Title = model.Title;
+            item.Rate = model.Rate;
+            item.Description = model.Description;
+        }
     }
 }

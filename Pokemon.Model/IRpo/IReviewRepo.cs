@@ -9,5 +9,9 @@ namespace Pokemon.Model.IRpo
         Review GetById(int id);
         bool ReviewExist(int id);
 
+        void CreateReview(Review model);
+        void DeleteReview(int id);
+        void UpdateReview(int id, Review model);
+
     }
 }

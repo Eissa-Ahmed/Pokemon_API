@@ -41,5 +41,22 @@ namespace Pokemon.DAL.Repo
         {
             return dbContext.Owners.Any(i => i.Id == id);
         }
+
+        public void CreateOwner(Owner model)
+        {
+            dbContext.Owners.Add(model);
+        }
+        public void UpdateOwner(int id, Owner model)
+        {
+            var item = dbContext.Owners.Find(id);
+            item.Name = model.Name;
+            item.CountryId = model.CountryId;
+            item.Gym = model.Gym;
+        }
+        public void DeleteOwner(int id)
+        {
+            var item = dbContext.Owners.Find(id);
+            dbContext.Owners.Remove(item);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pokemon.Model;
 using Pokemon.Model.IRpo;
+using Pokemon.Model.Models;
 using Pokemon.Model.ModelsDTO;
 
 namespace PokemonApi.Controller
@@ -140,6 +141,100 @@ namespace PokemonApi.Controller
             }
         }
 
+        #endregion
+
+        #region Delete
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteOwner(int id)
+        {
+            try
+            {
+                if (!services.owner.OwnerExist(id))
+                    return NotFound();
+
+                services.owner.DeleteOwner(id);
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<OwnerDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Deleted",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<OwnerDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
+        #endregion
+
+        #region Create
+        [HttpPost()]
+        public async Task<IActionResult> CreateOwner([FromForm] OwnerDTO model)
+        {
+            try
+            {
+                var owner = services.owner.GetAll().Where(i => i.Name.Trim().ToLower() == model.Name.ToLower()).FirstOrDefault();
+                if (owner != null)
+                    throw new Exception("owner Is Exist");
+
+                services.owner.CreateOwner(mapper.Map<Owner>(model));
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<OwnerDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Creatred",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<OwnerDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
+        #endregion
+
+        #region Update
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateOwner(int id, [FromForm] OwnerDTO model)
+        {
+            try
+            {
+                if (!services.owner.OwnerExist(id))
+                    throw new Exception("Country Is Not Exist");
+
+                services.owner.UpdateOwner(id, mapper.Map<Owner>(model));
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<OwnerDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Updated",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<OwnerDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #endregion

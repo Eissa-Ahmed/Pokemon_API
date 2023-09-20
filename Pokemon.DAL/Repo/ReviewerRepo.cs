@@ -35,5 +35,22 @@ namespace Pokemon.DAL.Repo
         {
             return dbContext.Reviewers.Any(i => i.Id == id);
         }
+
+        public void CreateReviewer(Reviewer model)
+        {
+            dbContext.Reviewers.Add(model);
+        }
+        public void DeleteReviewer(int id)
+        {
+            var item = dbContext.Reviewers.Find(id);
+            dbContext.Reviewers.Remove(item);
+        }
+        public void UpdateReviewer(int id, Reviewer model)
+        {
+            var item = dbContext.Reviewers.Find(id);
+            item.FirstName = model.FirstName;
+            item.LastName = model.LastName;
+
+        }
     }
 }

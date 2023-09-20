@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pokemon.Model;
 using Pokemon.Model.IRpo;
+using Pokemon.Model.Models;
 using Pokemon.Model.ModelsDTO;
 
 namespace PokemonApi.Controller
@@ -118,6 +119,96 @@ namespace PokemonApi.Controller
         #endregion
 
 
+        #region Delete
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteReviewer(int id)
+        {
+            try
+            {
+                if (!services.reviewer.ReviewerExist(id))
+                    return NotFound();
+
+                services.reviewer.DeleteReviewer(id);
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<ReviewerDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Deleted",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<ReviewerDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
+        #endregion
+
+        #region Create
+        [HttpPost()]
+        public async Task<IActionResult> CreateReviewer([FromForm] ReviewerDTO model)
+        {
+            try
+            {
+
+                services.reviewer.CreateReviewer(mapper.Map<Reviewer>(model));
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<ReviewerDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Creatred",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<ReviewerDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
+        #endregion
+
+        #region Update
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateReviewer(int id, [FromForm] ReviewerDTO model)
+        {
+            try
+            {
+                if (!services.reviewer.ReviewerExist(id))
+                    throw new Exception("Reviewer Is Not Exist");
+
+                services.reviewer.UpdateReviewer(id, mapper.Map<Reviewer>(model));
+                await services.SaveChanges();
+
+                return Ok(new Response<IEnumerable<ReviewerDTO>>
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Data Is Updated",
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new Response<IEnumerable<ReviewerDTO>>
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
+        #endregion
 
 
         #endregion
