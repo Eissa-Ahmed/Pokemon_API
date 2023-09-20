@@ -8,7 +8,9 @@ namespace Pokemon.Model.IRpo
         public Pokemons Get(int id);
         public Pokemons Get(string name);
         double GetRate(int id);
+        void DeletePokemon(int id);
         bool PokemonExists(int id);
         bool CreatePokemon(int categoryId, int OwnerId, Pokemons model);
+        void UpdatePokemon(int id, Pokemons model);
     }
 }

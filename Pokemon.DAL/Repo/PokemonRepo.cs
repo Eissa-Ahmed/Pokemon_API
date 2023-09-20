@@ -73,13 +73,43 @@ namespace Pokemon.DAL.Repo
                 pokemons = model,
                 Owner = owner,
             };
+            dbContext.PokemonOwner.Add(PokemonOwner);
+
             var PokemonCategory = new PokemonCategory()
             {
                 pokemons = model,
                 Category = category,
             };
+            dbContext.PokemonCategory.Add(PokemonCategory);
+
             dbContext.pokemons.Add(model);
             return true;
+        }
+        #endregion
+
+        #region Delete
+        public void DeletePokemon(int id)
+        {
+            var pokemonCategory = dbContext.PokemonCategory.Where(i => i.pokemonsId == id).ToList();
+            dbContext.PokemonCategory.RemoveRange(pokemonCategory);
+            var pokemonOwner = dbContext.PokemonOwner.Where(i => i.pokemonsId == id).ToList();
+            dbContext.PokemonOwner.RemoveRange(pokemonOwner);
+            var item = dbContext.pokemons.Find(id);
+            dbContext.pokemons.Remove(item);
+        }
+        #endregion
+
+        #region Update Pokemon
+        public void UpdatePokemon(int id, Pokemons model)
+        {
+            var item = dbContext.pokemons.Find(id);
+            item.Name = model.Name;
+            item.BirthDate = model.BirthDate;
+
+            if (model.ImageUrl != null)
+            {
+                item.ImageUrl = model.ImageUrl;
+            }
         }
         #endregion
 

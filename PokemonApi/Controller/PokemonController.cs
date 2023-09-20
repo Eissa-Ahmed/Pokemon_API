@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Pokemon.DAL.Helper;
 using Pokemon.Model;
 using Pokemon.Model.IRpo;
 using Pokemon.Model.Models;
 using Pokemon.Model.ModelsDTO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PokemonApi.Controller
 {
@@ -16,7 +16,7 @@ namespace PokemonApi.Controller
         public readonly IUnitOfWork services;
         private readonly IMapper mapper;
 
-        public PokemonController(IUnitOfWork unitOfWork , IMapper mapper)
+        public PokemonController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.services = unitOfWork;
             this.mapper = mapper;
@@ -63,7 +63,8 @@ namespace PokemonApi.Controller
             try
             {
                 var data = services.pokemon.GetAll();
-                return Ok(new Response<IEnumerable<Pokemons>> { 
+                return Ok(new Response<IEnumerable<Pokemons>>
+                {
                     Code = 200,
                     Status = true,
                     Message = "Data Is Geted",
@@ -89,7 +90,7 @@ namespace PokemonApi.Controller
             try
             {
                 var data = mapper.Map<PokemonDTO>(services.pokemon.Get(id));
-                if(data is null)
+                if (data is null)
                     return NotFound();
 
                 return Ok(new Response<PokemonDTO>
@@ -143,15 +144,116 @@ namespace PokemonApi.Controller
         #endregion
 
         #region Delete
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeletePokemon(int id)
+        {
+            try
+            {
 
+                if (!services.pokemon.PokemonExists(id))
+                    throw new Exception("Pokemon Is Not Exist");
+
+                FileManager.RemoveImage(services.pokemon.Get(id).ImageUrl);
+
+                services.pokemon.DeletePokemon(id);
+                await services.SaveChanges();
+
+                return Ok(new Response<Pokemons>()
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Pokemon Is Deleted",
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response<Pokemons>()
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #region Create
+        [HttpPost]
+        public async Task<IActionResult> CreatePokemon([FromForm] PokemonCreateDTO model)
+        {
+            try
+            {
+                if (services.pokemon.GetAll().Where(i => i.Name.Trim().ToLower() == model.Name.Trim().ToLower()).FirstOrDefault() != null)
+                    throw new Exception("Pokemon Is Exist");
 
+                if(!services.owner.OwnerExist(model.OwnerId))
+                    throw new Exception("Owner Is Not Exist");
+
+                if (!services.category.CategoryExists(model.CategoryId))
+                    throw new Exception("Category Is Not Exist");
+
+                string imageUrl = await FileManager.UploadImage(model.file);
+                var item = mapper.Map<Pokemons>(model);
+                item.ImageUrl = imageUrl;
+                services.pokemon.CreatePokemon(model.OwnerId, model.CategoryId, item);
+                await services.SaveChanges();
+
+                return Ok(new Response<Pokemons>() {
+                    Code = 200,
+                    Status = true,
+                    Message = "Pokemon Is Created",
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response<Pokemons>()
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #region Update
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdatePokemon(int id , [FromForm] PokemonUpdateDTO model)
+        {
+            try
+            {
 
+                if (!services.pokemon.PokemonExists(id))
+                    throw new Exception("Pokemon Is Not Exist");
+
+                var item = mapper.Map<Pokemons>(model);
+                if (model.file != null)
+                {
+                    FileManager.RemoveImage(services.pokemon.Get(id).ImageUrl);
+                    string imageUrl = await FileManager.UploadImage(model.file);
+                    item.ImageUrl = imageUrl;
+                }
+                services.pokemon.UpdatePokemon(id, item);
+
+                await services.SaveChanges();
+
+                return Ok(new Response<Pokemons>()
+                {
+                    Code = 200,
+                    Status = true,
+                    Message = "Pokemon Is Updated",
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response<Pokemons>()
+                {
+                    Code = 400,
+                    Status = false,
+                    Message = ex.Message,
+                });
+            }
+        }
         #endregion
 
         #endregion
