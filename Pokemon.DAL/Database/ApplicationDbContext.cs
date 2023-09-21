@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pokemon.Model.Models;
 
 namespace Pokemon.DAL.Database
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> option) : base(option) { }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PokemonOwner>().HasKey(k => new { k.pokemonsId , k.OwnerId});
-            modelBuilder.Entity<PokemonCategory>().HasKey(k => new { k.pokemonsId , k.CategoryId});
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<PokemonOwner>().HasKey(k => new { k.pokemonsId, k.OwnerId });
+            modelBuilder.Entity<PokemonCategory>().HasKey(k => new { k.pokemonsId, k.CategoryId });
         }
 
         public DbSet<Pokemons> pokemons { get; set; }

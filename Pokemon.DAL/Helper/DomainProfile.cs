@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Pokemon.Model.Models;
 using Pokemon.Model.ModelsDTO;
 
@@ -16,6 +17,7 @@ namespace Pokemon.DAL.Helper
             CreateMap<Reviewer , ReviewerDTO>().ReverseMap();
             CreateMap<Country , CountryDTO>().ReverseMap();
             CreateMap<Owner , OwnerDTO>().ReverseMap();
+            CreateMap<IdentityUser , RegisterDTO>().ReverseMap();
 
         }
     }

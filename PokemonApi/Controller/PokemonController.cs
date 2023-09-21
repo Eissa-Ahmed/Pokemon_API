@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pokemon.DAL.Helper;
 using Pokemon.Model;
@@ -10,6 +11,7 @@ namespace PokemonApi.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PokemonController : ControllerBase
     {
         #region Ctor

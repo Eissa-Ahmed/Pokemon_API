@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pokemon.DAL.Database;
 using Pokemon.DAL.Helper;
 using Pokemon.DAL.Repo;
 using Pokemon.Model.IRpo;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +31,7 @@ builder.Services.AddCors();
 #endregion
 
 #region Identity
-/*builder.Services.AddIdentity<IdentityUser , IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.Configure<IdentityOptions>(option =>
@@ -45,7 +49,30 @@ builder.Services.ConfigureApplicationCookie(option =>
     option.AccessDeniedPath = "/Account/Login";
     option.LogoutPath = "/Account/Login";
     option.LoginPath = "/Account/Login";
-});*/
+    option.LogoutPath = "/Account/Login";
+});
+#endregion
+
+#region JWT
+builder.Services.AddAuthentication(option =>
+{
+    //Check The Token is Valid
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option =>
+{
+    option.SaveToken = true;
+    option.RequireHttpsMetadata = false;
+    option.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["JWT:issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+    };
+});
 #endregion
 
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
